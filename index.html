@@ -1,609 +1,283 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Calculadora Pediátrica — Requerimento Energético & Fórmula</title>
-  <style>
-    :root{
-      --bg1:#fbfbff;
-      --bg2:#f6fbff;
-      --card:#ffffffcc;
-      --stroke:#e9eef7;
-      --text:#20304a;
-      --muted:#5b6b86;
-      --accent:#7aa7ff;
-      --accent2:#7fd1c7;
-      --accent3:#ffb3c8;
-      --shadow: 0 10px 30px rgba(32,48,74,.08);
-      --radius: 18px;
-      --radius2: 14px;
-      --focus: 0 0 0 4px rgba(122,167,255,.25);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora Pediátrica — Fórmula Infantil</title>
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: var(--sans);
-      color: var(--text);
-      background:
-        radial-gradient(900px 600px at 12% 10%, rgba(122,167,255,.22), transparent 60%),
-        radial-gradient(900px 600px at 90% 12%, rgba(127,209,199,.25), transparent 55%),
-        radial-gradient(700px 500px at 70% 90%, rgba(255,179,200,.22), transparent 55%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-    }
+<style>
+:root{
+  --bg1:#fbfbff;
+  --bg2:#f6fbff;
+  --card:#ffffffcc;
+  --stroke:#e9eef7;
+  --text:#20304a;
+  --muted:#5b6b86;
+  --accent:#7aa7ff;
+  --accent2:#7fd1c7;
+  --accent3:#ffb3c8;
+  --shadow:0 10px 30px rgba(32,48,74,.08);
+  --radius:18px;
+  --radius2:14px;
+  --sans:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+}
 
-    .wrap{
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 26px 16px 40px;
-    }
+*{box-sizing:border-box}
 
-    header{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      margin-bottom:18px;
-    }
+body{
+  margin:0;
+  font-family:var(--sans);
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 12% 10%, rgba(122,167,255,.22), transparent 60%),
+    radial-gradient(900px 600px at 90% 12%, rgba(127,209,199,.25), transparent 55%),
+    radial-gradient(700px 500px at 70% 90%, rgba(255,179,200,.22), transparent 55%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+}
 
-    .brand{ display:flex; align-items:center; gap:12px; }
-    .logo{
-      width:44px; height:44px;
-      border-radius: 14px;
-      background:
-        radial-gradient(circle at 30% 30%, #fff, transparent 55%),
-        linear-gradient(135deg, rgba(122,167,255,.95), rgba(127,209,199,.95));
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    .logo:before{
-      content:"";
-      position:absolute;
-      inset:-10px;
-      background:
-        radial-gradient(circle at 65% 70%, rgba(255,179,200,.7), transparent 50%),
-        radial-gradient(circle at 20% 85%, rgba(255,255,255,.55), transparent 55%);
-    }
+.wrap{
+  max-width:1200px;
+  margin:auto;
+  padding:26px 16px 40px;
+}
 
-    h1{ font-size: 18px; margin:0; letter-spacing:.2px; }
-    .subtitle{ margin:2px 0 0; color: var(--muted); font-size: 13px; }
+header{
+  margin-bottom:18px;
+}
 
-    .pill{
-      display:flex; align-items:center; gap:8px;
-      padding:10px 12px;
-      border:1px solid var(--stroke);
-      background: rgba(255,255,255,.7);
-      border-radius: 999px;
-      box-shadow: 0 6px 18px rgba(32,48,74,.05);
-      color: var(--muted);
-      font-size: 13px;
-      user-select:none;
-    }
-    .pill .dot{
-      width:10px; height:10px; border-radius:999px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      box-shadow: 0 0 0 4px rgba(122,167,255,.12);
-    }
+h1{font-size:18px;margin:0}
+.subtitle{font-size:13px;color:var(--muted)}
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr 1fr 1fr;
-      gap: 14px;
-      align-items: start;
-    }
-    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+.grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr 1fr;
+  gap:14px;
+}
+@media(max-width:1100px){
+  .grid{grid-template-columns:1fr}
+}
 
-    .card{
-      background: var(--card);
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 14px;
-      position:relative;
-      overflow:hidden;
-      backdrop-filter: blur(6px);
-    }
-    .card:after{
-      content:"";
-      position:absolute;
-      right:-40px; top:-40px;
-      width:140px; height:140px;
-      background: radial-gradient(circle at 35% 35%, rgba(255,179,200,.35), transparent 60%);
-      border-radius: 999px;
-      pointer-events:none;
-    }
-    .card h2{
-      margin:0 0 10px;
-      font-size: 14px;
-      color: var(--text);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .badge{
-      font-size: 12px;
-      color: var(--muted);
-      background: rgba(122,167,255,.10);
-      border: 1px solid rgba(122,167,255,.20);
-      padding: 2px 8px;
-      border-radius: 999px;
-    }
+.card{
+  background:var(--card);
+  border:1px solid var(--stroke);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;
+}
 
-    /* Idade */
-    .age-list{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-      max-height: 340px;
-      overflow:auto;
-      padding-right:6px;
-    }
-    .age-item{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 10px 10px;
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.75);
-      transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
-    }
-    .age-item:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(32,48,74,.06);
-      border-color: rgba(122,167,255,.35);
-    }
-    .age-item label{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      cursor:pointer;
-      width:100%;
-      user-select:none;
-    }
-    .age-item b{ font-size: 13px; }
-    .age-item span{ font-size: 12px; color: var(--muted); }
+.card h2{
+  font-size:14px;
+  margin:0 0 10px;
+}
 
-    input[type="radio"]{
-      width:18px; height:18px;
-      accent-color: var(--accent);
-    }
+.age-list{display:grid;gap:8px;max-height:340px;overflow:auto}
+.age-item{
+  padding:10px;
+  border:1px solid var(--stroke);
+  border-radius:var(--radius2);
+  background:white;
+}
+.age-item label{display:flex;gap:10px;cursor:pointer}
 
-    /* Peso */
-    .field{ display:flex; flex-direction:column; gap:8px; }
-    .input{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 12px;
-      border:1px solid var(--stroke);
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.78);
-    }
-    .input:focus-within{ box-shadow: var(--focus); border-color: rgba(122,167,255,.45); }
-    .input input{
-      border:0; outline:none; width:100%;
-      font-size: 16px; background:transparent; color: var(--text);
-    }
-    .unit{
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      padding: 6px 8px;
-      border-radius: 999px;
-      background: rgba(127,209,199,.14);
-      border: 1px solid rgba(127,209,199,.22);
-      user-select:none;
-    }
-    .helper{ color: var(--muted); font-size: 12px; line-height:1.35; margin-top:2px; }
+input[type=radio]{accent-color:var(--accent)}
 
-    /* Sexo */
-    .seg{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:8px;
-    }
-    .seg label{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 12px 10px;
-      border: 1px solid var(--stroke);
-      border-radius: var(--radius2);
-      background: rgba(255,255,255,.76);
-      cursor:pointer;
-      transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
-      user-select:none;
-    }
-    .seg label:hover{
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(32,48,74,.06);
-      border-color: rgba(127,209,199,.40);
-    }
+.input{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px;
+  border:1px solid var(--stroke);
+  border-radius:var(--radius2);
+  background:white;
+}
+.input input{
+  border:0;
+  outline:none;
+  width:100%;
+  font-size:16px;
+}
 
-    /* Resultado */
-    .result{
-      margin-top: 14px;
-      padding: 18px;
-      border-radius: var(--radius);
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,.78);
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-    }
-    .result:before{
-      content:"";
-      position:absolute;
-      left:-60px; bottom:-60px;
-      width:180px; height:180px;
-      background: radial-gradient(circle at 35% 35%, rgba(127,209,199,.28), transparent 65%);
-      border-radius: 999px;
-      pointer-events:none;
-    }
-    .result h3{ margin:0 0 10px; font-size: 14px; display:flex; align-items:center; gap:8px; }
-    .result p{ margin: 8px 0; line-height: 1.5; color: var(--text); }
-    .result .muted{ color: var(--muted); font-size: 12px; }
-    .warn{
-      margin-top:10px;
-      padding:10px 12px;
-      border-radius: 14px;
-      background: rgba(255,179,200,.18);
-      border: 1px solid rgba(255,179,200,.28);
-      color: #6b2a3d;
-      font-size: 12px;
-      line-height:1.35;
-    }
+.unit{
+  font-size:12px;
+  background:rgba(127,209,199,.15);
+  padding:6px 8px;
+  border-radius:999px;
+}
 
-    .kpi{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap:10px;
-      margin-top: 12px;
-    }
-    @media (max-width: 900px){ .kpi{ grid-template-columns: 1fr; } }
-    .kpi .box{
-      padding: 12px 12px;
-      border:1px dashed rgba(122,167,255,.35);
-      border-radius: 16px;
-      background: rgba(122,167,255,.08);
-    }
-    .kpi .box b{
-      display:block;
-      font-size: 18px;
-      margin-top:4px;
-      letter-spacing:.2px;
-    }
-    .kpi .box span{ font-size: 12px; color: var(--muted); }
+.seg{display:grid;gap:8px}
+.seg label{
+  padding:12px;
+  border:1px solid var(--stroke);
+  border-radius:var(--radius2);
+  background:white;
+  cursor:pointer;
+}
 
-    .actions{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 12px;
-    }
-    button{
-      border:0;
-      cursor:pointer;
-      border-radius: 999px;
-      padding: 10px 12px;
-      font-size: 13px;
-      color: var(--text);
-      background: rgba(255,255,255,.85);
-      border: 1px solid var(--stroke);
-      box-shadow: 0 8px 18px rgba(32,48,74,.06);
-      transition: transform .08s ease, box-shadow .08s ease, border-color .08s ease;
-    }
-    button:hover{
-      transform: translateY(-1px);
-      border-color: rgba(122,167,255,.45);
-      box-shadow: 0 12px 24px rgba(32,48,74,.08);
-    }
-    button.primary{
-      background: linear-gradient(135deg, rgba(122,167,255,.95), rgba(127,209,199,.95));
-      color:white;
-      border: 1px solid rgba(255,255,255,.45);
-    }
-    button.primary:hover{ border-color: rgba(255,255,255,.65); }
+.result{
+  margin-top:18px;
+  padding:18px;
+  border-radius:var(--radius);
+  border:1px solid var(--stroke);
+  background:white;
+}
 
-    footer{ margin-top: 14px; color: var(--muted); font-size: 12px; line-height:1.4; }
-
-    .age-list::-webkit-scrollbar{ width: 10px; }
-    .age-list::-webkit-scrollbar-thumb{
-      background: rgba(122,167,255,.25);
-      border-radius: 999px;
-      border: 3px solid rgba(255,255,255,.55);
-    }
-    .age-list::-webkit-scrollbar-track{ background: transparent; }
-  </style>
+.kpi{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+@media(max-width:900px){
+  .kpi{grid-template-columns:1fr}
+}
+.kpi .box{
+  padding:12px;
+  border:1px dashed var(--accent);
+  border-radius:14px;
+  background:rgba(122,167,255,.08);
+  text-align:center;
+}
+.kpi .box b{
+  font-size:20px;
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Calculadora Pediátrica (0–12 meses)</h1>
-          <p class="subtitle">Requerimento energético diário + volume de fórmula pronta (0,67 kcal/mL)</p>
-        </div>
-      </div>
-      <div class="pill">
-        <span class="dot" aria-hidden="true"></span>
-        Cálculo automático em tempo real
-      </div>
-    </header>
+<div class="wrap">
 
-    <div class="grid">
-      <!-- Idade -->
-      <section class="card" aria-label="Seleção de idade">
-        <h2>Idade (meses) <span class="badge">selecione 1</span></h2>
+<header>
+  <h1>Calculadora Pediátrica (0–12 meses)</h1>
+  <div class="subtitle">Requerimento energético diário e volume de fórmula infantil diário nos casos de ALEITAMENTO EXCLUSIVO.</div>
+</header>
 
-        <!-- Versão "à prova de falhas": lista já vem no HTML + JS só lê -->
-        <div class="age-list" id="ageList">
-          <div class="age-item">
-            <label><input type="radio" name="age" value="0-1"> <div><b>0-1</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="1-2"> <div><b>1-2</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="2-3"> <div><b>2-3</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="3-4"> <div><b>3-4</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="4-5"> <div><b>4-5</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="5-6"> <div><b>5-6</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="6-7"> <div><b>6-7</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="7-8"> <div><b>7-8</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="8-9"> <div><b>8-9</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="9-10"> <div><b>9-10</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="10-11"> <div><b>10-11</b> <span>meses</span></div></label>
-          </div>
-          <div class="age-item">
-            <label><input type="radio" name="age" value="11-12"> <div><b>11-12</b> <span>meses</span></div></label>
-          </div>
-        </div>
+<div class="grid">
 
-        <p class="helper">
-          Selecione uma faixa: <b>0-1</b>, <b>1-2</b>, … <b>11-12</b>.
-        </p>
-      </section>
+<!-- IDADE -->
+<section class="card">
+<h2>Idade (meses)</h2>
+<div class="age-list">
+  <div class="age-item"><label><input type="radio" name="age" value="0-1">0–1</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="1-2">1–2</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="2-3">2–3</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="3-4">3–4</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="4-5">4–5</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="5-6">5–6</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="6-7">6–7</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="7-8">7–8</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="8-9">8–9</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="9-10">9–10</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="10-11">10–11</label></div>
+  <div class="age-item"><label><input type="radio" name="age" value="11-12">11–12</label></div>
+</div>
+</section>
 
-      <!-- Peso -->
-      <section class="card" aria-label="Entrada de peso">
-        <h2>Peso (kg)</h2>
-        <div class="field">
-          <div class="input">
-            <input id="weight" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Ex.: 6,2" aria-label="Peso em kg" />
-            <span class="unit">kg</span>
-          </div>
-          <div class="helper">
-            Use ponto ou vírgula. Ex.: <span style="font-family:var(--mono)">6.20</span> ou <span style="font-family:var(--mono)">6,20</span>
-          </div>
-        </div>
-      </section>
+<!-- PESO -->
+<section class="card">
+<h2>Peso (kg)</h2>
+<div class="input">
+  <input id="weight" type="number" step="0.01" placeholder="Ex: 6,2">
+  <span class="unit">kg</span>
+</div>
+</section>
 
-      <!-- Sexo -->
-      <section class="card" aria-label="Seleção de sexo">
-        <h2>Sexo</h2>
-        <div class="seg">
-          <label><input type="radio" name="sex" value="Feminino" /> Feminino</label>
-          <label><input type="radio" name="sex" value="Masculino" /> Masculino</label>
-        </div>
-        <p class="helper">O coeficiente kcal/kg/dia muda conforme sexo e faixa etária.</p>
-      </section>
-    </div>
+<!-- SEXO -->
+<section class="card">
+<h2>Sexo</h2>
+<div class="seg">
+  <label><input type="radio" name="sex" value="Feminino"> Feminino</label>
+  <label><input type="radio" name="sex" value="Masculino"> Masculino</label>
+</div>
+</section>
 
-    <section class="result" aria-label="Resultado do cálculo">
-      <h3>Resultado</h3>
+<!-- KCAL/ML -->
+<section class="card">
+<h2>Fórmula (kcal/mL)</h2>
+<div class="seg">
+  <label><input type="radio" name="kcalml" value="0.67" checked> Padrão (0,67)</label>
+  <label><input type="radio" name="kcalml" value="outro"> Outro</label>
+</div>
+<div class="input" style="margin-top:8px">
+  <input id="kcalmlCustom" type="number" step="0.01" placeholder="Ex: 0,72" disabled>
+  <span class="unit">kcal/mL</span>
+</div>
+</section>
 
-      <p id="line1" class="muted">Selecione <b>idade</b>, digite <b>peso</b> e escolha <b>sexo</b> para calcular.</p>
-      <p id="line2" class="muted"></p>
+</div>
 
-      <div class="kpi" id="kpi" style="display:none;">
-        <div class="box">
-          <span>Requerimento energético (kcal/dia)</span>
-          <b id="kcalDay">—</b>
-        </div>
-        <div class="box" style="border-color: rgba(127,209,199,.45); background: rgba(127,209,199,.10);">
-          <span>Volume de fórmula (mL/dia)</span>
-          <b id="mlDay">—</b>
-        </div>
-        <div class="box" style="border-color: rgba(255,179,200,.45); background: rgba(255,179,200,.10);">
-          <span>Volume por mamada (mL)</span>
-          <b id="mlFeed">—</b>
-        </div>
-      </div>
+<section class="result">
+<p id="text1">Selecione idade, peso, sexo e fórmula.</p>
+<p id="text2"></p>
 
-      <div class="actions">
-        <button class="primary" id="copyBtn" type="button">Copiar texto do resultado</button>
-        <button id="resetBtn" type="button">Limpar</button>
-      </div>
+<div class="kpi" id="kpi" style="display:none">
+  <div class="box"><b id="kcalDay"></b><div>kcal/dia</div></div>
+  <div class="box"><b id="mlDay"></b><div>mL/dia</div></div>
+  <div class="box"><b id="feedsDay"></b><div>mamadas/dia</div></div>
+  <div class="box"><b id="mlFeed"></b><div>mL/mamada</div></div>
+</div>
+</section>
 
-      <div class="warn">
-        <b>Observação:</b> esta página aplica exatamente as regras que você definiu (kcal/kg/dia por sexo/idade, 0,67 kcal/mL e faixa de mamadas/dia).
-        Em prática clínica, individualizações podem ser necessárias.
-      </div>
-
-      <footer>Visual acolhedor (vibe pediatria) com cores pastéis e traços suaves.</footer>
-    </section>
-  </div>
+</div>
 
 <script>
-  // --- Tabelas (exatamente como fornecidas) ---
-  const kcalPerKg = {
-    Feminino: {
-      "0-1": 107, "1-2": 101, "2-3": 94, "3-4": 84,
-      "4-5": 83,  "5-6": 82,  "6-7": 78, "7-8": 78,
-      "8-9": 78,  "9-10": 79, "10-11": 79, "11-12": 79
-    },
-    Masculino: {
-      "0-1": 113, "1-2": 104, "2-3": 95, "3-4": 82,
-      "4-5": 81,  "5-6": 81,  "6-7": 79, "7-8": 79,
-      "8-9": 79,  "9-10": 80, "10-11": 80, "11-12": 81
-    }
-  };
-
-  const feedsPerDayRange = {
-    "0-1": [6, 8],
-    "1-2": [6, 8],
-    "2-3": [5, 6],
-    "3-4": [5, 6],
-    "4-5": [2, 3],
-    "5-6": [2, 3],
-    "6-7": [2, 3],
-    "7-8": [2, 3],
-    "8-9": [2, 3],
-    "9-10": [2, 3],
-    "10-11": [2, 3],
-    "11-12": [2, 3],
-  };
-
-  const KCAL_PER_ML = 0.67;
-
-  const $ = (sel) => document.querySelector(sel);
-  const $$ = (sel) => Array.from(document.querySelectorAll(sel));
-
-  function parseWeight(raw){
-    if(raw == null) return NaN;
-    const s = String(raw).trim().replace(",", ".");
-    const n = Number(s);
-    return n;
+const kcalKg = {
+  Feminino:{
+    "0-1":107,"1-2":101,"2-3":94,"3-4":84,
+    "4-5":83,"5-6":82,"6-7":78,"7-8":78,
+    "8-9":78,"9-10":79,"10-11":79,"11-12":79
+  },
+  Masculino:{
+    "0-1":113,"1-2":104,"2-3":95,"3-4":82,
+    "4-5":81,"5-6":81,"6-7":79,"7-8":79,
+    "8-9":79,"9-10":80,"10-11":80,"11-12":81
   }
-  function round0(n){ return Math.round(n); }
-  function fmtNumberBR(n, decimals=0){
-    if(!Number.isFinite(n)) return "—";
-    return n.toLocaleString("pt-BR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+};
+
+function kcalPerMl(){
+  const sel=document.querySelector('input[name="kcalml"]:checked');
+  if(sel.value==="outro"){
+    const v=parseFloat(document.getElementById("kcalmlCustom").value);
+    return v>0?v:0.67;
   }
-  function feedsChosen(range){
-    const avg = (range[0] + range[1]) / 2;
-    return Math.round(avg);
-  }
+  return 0.67;
+}
 
-  function getSelectedAge(){
-    const el = $('input[name="age"]:checked');
-    return el ? el.value : null;
-  }
-  function getSelectedSex(){
-    const el = $('input[name="sex"]:checked');
-    return el ? el.value : null;
-  }
+function feedsByAge(age){
+  if(age==="0-1"||age==="1-2") return 7;
+  if(age==="2-3"||age==="3-4") return 6;
+  return 3;
+}
 
-  const line1 = $("#line1");
-  const line2 = $("#line2");
-  const kpi = $("#kpi");
-  const kcalDayEl = $("#kcalDay");
-  const mlDayEl = $("#mlDay");
-  const mlFeedEl = $("#mlFeed");
+function update(){
+  const age=document.querySelector('input[name=age]:checked')?.value;
+  const sex=document.querySelector('input[name=sex]:checked')?.value;
+  const w=parseFloat(document.getElementById("weight").value);
+  if(!age||!sex||!w) return;
 
-  function update(){
-    const ageKey = getSelectedAge();
-    const sex = getSelectedSex();
-    const weight = parseWeight($("#weight").value);
+  const kcal=kcalKg[sex][age]*w;
+  const ml=kcal/kcalPerMl();
+  const feeds=feedsByAge(age);
 
-    const hasAge = !!ageKey;
-    const hasSex = !!sex;
-    const hasWeight = Number.isFinite(weight) && weight > 0;
+  document.getElementById("text1").innerText=
+    `Para criança ${sex}, ${age} meses, ${w.toFixed(2)} kg:`;
+  document.getElementById("text2").innerText=
+    `${kcal.toFixed(0)} kcal/dia → ${ml.toFixed(0)} mL/dia`;
 
-    if(!hasAge || !hasSex || !hasWeight){
-      kpi.style.display = "none";
-      line1.className = "muted";
-      line2.className = "muted";
-      line1.innerHTML = `Selecione <b>idade</b>, digite <b>peso</b> e escolha <b>sexo</b> para calcular.`;
-      line2.textContent = "";
-      return;
-    }
+  document.getElementById("kpi").style.display="grid";
+  document.getElementById("kcalDay").innerText=kcal.toFixed(0);
+  document.getElementById("mlDay").innerText=ml.toFixed(0);
+  document.getElementById("feedsDay").innerText=feeds;
+  document.getElementById("mlFeed").innerText=(ml/feeds).toFixed(0);
+}
 
-    const coef = kcalPerKg[sex][ageKey];      // kcal/kg/dia
-    const kcalDay = coef * weight;            // kcal/dia
-    const mlDay = kcalDay / KCAL_PER_ML;      // mL/dia
-
-    const range = feedsPerDayRange[ageKey];
-    const feeds = feedsChosen(range);         // referência para divisão
-    const mlPerFeed = mlDay / feeds;
-
-    const kcalDayR = round0(kcalDay);
-    const mlDayR = round0(mlDay);
-    const mlFeedR = round0(mlPerFeed);
-
-    line1.className = "";
-    line2.className = "";
-
-    line1.textContent =
-      `Para uma criança do sexo ${sex}, com ${ageKey} meses e ${fmtNumberBR(weight, 2)} kg, ` +
-      `o requerimento energético diário é de ${fmtNumberBR(kcalDayR)} kcal/dia, ` +
-      `o que representa ${fmtNumberBR(mlDayR)} mL por dia de fórmula pronta.`;
-
-    line2.textContent =
-      `Para esta faixa etária, divida estes ${fmtNumberBR(mlDayR)} mL em ${range[0]} à ${range[1]} refeições/dia ` +
-      `(usando ${feeds} como referência), resultando em aproximadamente ${fmtNumberBR(mlFeedR)} mL por mamada.`;
-
-    kpi.style.display = "grid";
-    kcalDayEl.textContent = `${fmtNumberBR(kcalDayR)} kcal/dia`;
-    mlDayEl.textContent = `${fmtNumberBR(mlDayR)} mL/dia`;
-    mlFeedEl.textContent = `${fmtNumberBR(mlFeedR)} mL`;
-
-    $("#copyBtn").dataset.copyText = `${line1.textContent}\n\n${line2.textContent}`;
-  }
-
-  // Listeners (agora garantidos porque os inputs já existem no HTML)
-  $$('input[name="age"]').forEach(el => el.addEventListener("change", update));
-  $$('input[name="sex"]').forEach(el => el.addEventListener("change", update));
-  $("#weight").addEventListener("input", update);
-
-  $("#resetBtn").addEventListener("click", () => {
-    $$('input[name="age"]').forEach(el => el.checked = false);
-    $$('input[name="sex"]').forEach(el => el.checked = false);
-    $("#weight").value = "";
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",update));
+document.querySelectorAll("input[name=kcalml]").forEach(i=>{
+  i.addEventListener("change",()=>{
+    document.getElementById("kcalmlCustom").disabled=i.value!=="outro";
     update();
-    $("#weight").focus();
   });
-
-  $("#copyBtn").addEventListener("click", async () => {
-    const text = $("#copyBtn").dataset.copyText || "";
-    if(!text){
-      alert("Preencha idade, peso e sexo para gerar o resultado antes de copiar.");
-      return;
-    }
-    try{
-      await navigator.clipboard.writeText(text);
-      $("#copyBtn").textContent = "Copiado ✓";
-      setTimeout(()=> $("#copyBtn").textContent = "Copiar texto do resultado", 1200);
-    }catch(e){
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      $("#copyBtn").textContent = "Copiado ✓";
-      setTimeout(()=> $("#copyBtn").textContent = "Copiar texto do resultado", 1200);
-    }
-  });
-
-  update();
+});
 </script>
+
 </body>
 </html>
